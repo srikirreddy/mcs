@@ -29,7 +29,7 @@ public class MCSTemplateTreeView extends VerticalLayout {
 		tree.setItems(service.getAllTemplatesByDevice(Long.parseLong(devId)));
 
 		tree.addHierarchyColumn(Template::getTemplateName).setHeader("Template Name");
-		tree.addColumn(Template::getProbe).setHeader("Probe");
+		//tree.addColumn(Template::getProbe).setHeader("Probe");
 
 		tree.addSelectionListener(event -> {
 			Set<Template> selectedItems = event.getAllSelectedItems();

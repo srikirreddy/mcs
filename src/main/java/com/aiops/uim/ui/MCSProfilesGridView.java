@@ -6,6 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.aiops.uim.mcs.serviceclient.IProfileService;
+import com.aiops.uim.mcs.serviceclient.ITemplateService;
+import com.aiops.uim.mcs.services.ProfileService;
+import com.aiops.uim.mcs.utils.UIMInstance;
+import com.nimsoft.selfservice.v2.model.RawProfile;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.treegrid.TreeGrid;
@@ -13,17 +18,20 @@ import com.vaadin.flow.router.Route;
 
 @Route("mcs/profiles")
 public class MCSProfilesGridView extends VerticalLayout {
-
+	
+	private IProfileService profileService = null;
+	
     // used to generate some random data
     private final Random random = new Random();
 
     public MCSProfilesGridView() {
         // basic tree setup
-        TreeGrid<Project> treeGrid = new TreeGrid<>();
+        TreeGrid<RawProfile> treeGrid = new TreeGrid<>();
         //addComponentAsFirst(treeGrid);
-        treeGrid.addHierarchyColumn(Project::getName).setHeader("Project Name");
-        treeGrid.addColumn(Project::getHoursDone).setHeader("Hours Done");//.setCaption("Hours Done");
-        treeGrid.addColumn(Project::getLastModified).setHeader("Last Modified");//.setCaption("Last Modified");
+        treeGrid.addHierarchyColumn(RawProfile::getProfileName).setHeader("Profile Name");
+        treeGrid.addColumn(RawProfile::getStatus).setHeader("Status");//.setCaption("Last Modified");
+        treeGrid.addColumn(RawProfile::getTemplateId).setHeader("Template Id");//.setCaption("Hours Done");
+        
 
         // some listeners for interaction
 //        treeGrid.addExpandListener(event -> Notification.show("hi"));
@@ -36,7 +44,10 @@ public class MCSProfilesGridView extends VerticalLayout {
 
 
         // add the list of root projects and specify a provider of sub-projects
-        treeGrid.setItems(generateProjectsForYears(2010, 2016), Project::getSubProjects);
+        profileService = new ProfileService(MainView.getUimInstance());
+        List<RawProfile> profiles = profileService.getAllProfilesForDevice(1);
+        treeGrid.setItems(profiles, RawProfile::getSubProfiles);
+        //treeGrid.setItems(generateProjectsForYears(2010, 2016), Project::getSubProjects);
         add(treeGrid);
     }
 

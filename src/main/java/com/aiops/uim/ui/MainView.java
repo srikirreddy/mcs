@@ -21,7 +21,7 @@ public class MainView extends VerticalLayout implements UIMActionListener{
 	
 	
 	//TODO: Need to get this information from ecosystem
-	private UIMInstance uimInstance = new UIMInstance("http", "kp642490-ump-e4", 80, "administrator", "N0tallowed");
+	private static UIMInstance uimInstance = new UIMInstance("http", "kp642490-ump-e4", 80, "administrator", "N0tallowed");
 	//private UIMInstance uimInstance = new UIMInstance("http", "10.17.175.145", 80, "administrator", "1qaz2wsx");
 
 	ITemplateService templateService = new TemplateService(uimInstance);
@@ -129,4 +129,10 @@ public class MainView extends VerticalLayout implements UIMActionListener{
 		monitoringLayout.addToSecondary(new MCSTemplateFieldsView(templateService, templateId));
 		monitoringLayout.setSplitterPosition(25);
 	}
+
+	public static UIMInstance getUimInstance() {
+		return uimInstance;
+	}
+	
+	
 }
