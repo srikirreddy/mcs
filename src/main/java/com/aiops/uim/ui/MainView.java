@@ -5,6 +5,7 @@ import com.aiops.uim.mcs.serviceclient.UIMActionListener;
 import com.aiops.uim.mcs.services.TemplateService;
 import com.aiops.uim.mcs.utils.UIMInstance;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -29,8 +30,8 @@ public class MainView extends VerticalLayout implements UIMActionListener{
 	SplitLayout monitoringLayout;
 	
     public MainView() {  
-    	
-    	//BasicLayoutView();   
+    	this.setHeight("100%");
+    	//BasicLayoutView(); 
     	mainLayout = new SplitLayout();
     	createMainLayout(mainLayout);    	    	
     }
@@ -40,26 +41,40 @@ public class MainView extends VerticalLayout implements UIMActionListener{
     	
     	Tabs tabs = createTabs();
     	mainLayout.setOrientation(Orientation.VERTICAL);
-    	mainLayout.setSplitterPosition(25);
+    	mainLayout.setSplitterPosition(5);
     	mainLayout.addToPrimary(tabs);
+    	//mainLayout.setPrimaryStyle("width", "100%");
+    	mainLayout.setWidthFull();
+    	mainLayout.setHeightFull();
     	add(mainLayout);
     	
     	tabs.addSelectedChangeListener(event -> {    	    
     	    Component selectedPage = tabs.getSelectedTab();
     	    String tabName = ((Tab) selectedPage).getLabel();
     	    selectedPage.setVisible(true);
+    	    
+    	    if(tabName.equals("Dashboard")) {
+    	    	mainLayout.addToSecondary(new Label(tabName));
+    	    }
     	    if(tabName.equals("Templates")) {
     	    	monitoringLayout = new SplitLayout();
             	
             	monitoringLayout.setOrientation(Orientation.HORIZONTAL);
-            	monitoringLayout.setSplitterPosition(100);
+            	monitoringLayout.setSplitterPosition(25);
             	monitoringLayout.addToPrimary(new MCSTemplateTreeView(templateService, "1", this));   
-            	monitoringLayout.addToSecondary(new Label(""));
+            	monitoringLayout.addToSecondary(new FormLayout());
             	
             	mainLayout.addToSecondary(monitoringLayout);
+            	mainLayout.setPrimaryStyle("height", "5%");
+    	    	mainLayout.setSecondaryStyle("height", "95%");
     	    }
-    	    else {
-    	    	mainLayout.addToSecondary(new Label(tabName));
+    	    else if(tabName.equals("Profiles")) {    	    	
+    	    	mainLayout.addToSecondary(new MCSProfilesGridView());
+    	    	mainLayout.setPrimaryStyle("height", "5%");
+    	    	mainLayout.setSecondaryStyle("height", "95%");
+//    	    	tabs.getUI().ifPresent(ui ->
+//    	           ui.navigate("profiles"));
+    	    	
     	    }    	    
     	});    	
     }
@@ -72,6 +87,8 @@ public class MainView extends VerticalLayout implements UIMActionListener{
     	
     	Tabs tabs = new Tabs(tabDashboard, tabTemplate, tabProfile);
     	tabs.setFlexGrowForEnclosedTabs(1);
+    	tabs.setWidthFull();
+    	tabs.setHeight("5%");
     	return tabs;
     }  
     
