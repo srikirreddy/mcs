@@ -2,10 +2,14 @@ package com.aiops.uim.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.aiops.uim.mcs.serviceclient.IProfileService;
 import com.aiops.uim.mcs.serviceclient.ITemplateService;
+import com.aiops.uim.mcs.services.ProfileService;
 import com.nimsoft.selfservice.v2.model.Field;
 import com.nimsoft.selfservice.v2.model.RawProfile;
 import com.nimsoft.selfservice.v2.model.SelectableObject;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -17,15 +21,19 @@ import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 
 @Route("templatefields")
 public class MCSTemplateFieldsView extends FormLayout{
 	
 	private ITemplateService templateService = null;
+	private IProfileService profileService = null;
+	
 	private int templateId = -1;
 	
-	public MCSTemplateFieldsView(ITemplateService service, int templateId) {
+	public MCSTemplateFieldsView(ITemplateService service, int templateId) throws ValidationException {
 		
 		this.templateService = service;
 		this.templateId = templateId;
@@ -36,11 +44,14 @@ public class MCSTemplateFieldsView extends FormLayout{
     	
     	//Get fields based on template 
 		RawProfile rawProfile =  templateService.getProfileForTemplate(templateId);		
-    	
+    	Binder<RawProfile> profileBinder = new Binder<>(RawProfile.class);
+    	Binder<Field> fieldBinder; 
     	
     	if(rawProfile != null) {
     		List<Field> fields = rawProfile.getFields();
     		for(Field field : fields) {
+    			
+    			fieldBinder = new Binder<>(Field.class);
     			boolean required = false;
     			if(field.isRequired())
     				required = true;
@@ -54,10 +65,12 @@ public class MCSTemplateFieldsView extends FormLayout{
 						  textField.setRequired(required);
 						  textField.setRequiredIndicatorVisible(required);
 						  textField.setLabel(field.getLabel());
-						  if(field.getDefaultValue() != null)
-							  textField.setValue(field.getDefaultValue());
+//						  if(field.getDefaultValue() != null)
+//							  textField.setValue(field.getDefaultValue());
 						  textField.setId(field.getId().toString());							  
 						  templateDetailsForm.add(textField);
+						  String fieldName = field.getName();
+						  fieldBinder.forField(textField).bind(Field::getValueAsString, Field:: setValue);
 						  break;
 					  
     				case "textarea" :
@@ -144,12 +157,32 @@ public class MCSTemplateFieldsView extends FormLayout{
     				
 				  
     			}
+    			fieldBinder.setBean(field);
+    			fieldBinder.writeBean(field);
     		}
+    		
     	}  
+    	
+    	profileBinder.setBean(rawProfile);
     	
     	templateFieldsLayout.addToPrimary(templateDetailsForm);
     	Button btnCreate = new Button("Create");
     	Button btnCancel = new Button("Cancel");
+    	
+    	btnCreate.addClickListener(e ->{
+    		try {				
+				profileBinder.writeBean(rawProfile);
+			} catch (ValidationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    		profileService = new ProfileService(MainView.getUimInstance());
+    		profileService.saveProfile(rawProfile, 1);
+    	});
+    	
+    	btnCancel.addClickListener(e ->{
+    		
+    	});
     	
     	templateFieldsLayout.addToSecondary(btnCreate,btnCancel);
     	templateFieldsLayout.setSplitterPosition(90);

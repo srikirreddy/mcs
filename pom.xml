@@ -123,7 +123,7 @@
 		<dependency>
 			<groupId>com.nimsoft.ce.selfservice</groupId>
 			<artifactId>selfservice-profile</artifactId>
-			<version>4.0.0</version>
+			<version>4.0.0</version>			
 		</dependency>		
 
 		<dependency>

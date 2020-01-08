@@ -15,6 +15,7 @@ import com.aiops.uim.mcs.utils.UIMInstance;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
 public class ProfileService extends ServiceAPI implements IProfileService {
 
 	public ProfileService(UIMInstance uim) {

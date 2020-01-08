@@ -7,12 +7,15 @@ import com.aiops.uim.mcs.utils.UIMInstance;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 
 
@@ -81,9 +84,14 @@ public class MainView extends VerticalLayout implements UIMActionListener{
     
     //Create tabs
     private Tabs createTabs() {
-    	Tab tabDashboard = new Tab("DashBoard");    	 	
+    	Tab tabDashboard = new Tab(VaadinIcon.HOME.create(), new Span("DashBoard")); 
+    	//Tab tabDashboard = new Tab("DashBoard");
     	Tab tabTemplate = new Tab("Templates");
     	Tab tabProfile = new Tab("Profiles");   
+    	//tabDashboard.add
+    	tabDashboard.setClassName("tab");
+    	tabTemplate.setClassName("tab");
+    	tabProfile.setClassName("tab");   
     	
     	Tabs tabs = new Tabs(tabDashboard, tabTemplate, tabProfile);
     	tabs.setFlexGrowForEnclosedTabs(1);
@@ -126,7 +134,12 @@ public class MainView extends VerticalLayout implements UIMActionListener{
 		
 		//Update UI as per new template ID
 		int templateId = Integer.parseInt(newData);				
-		monitoringLayout.addToSecondary(new MCSTemplateFieldsView(templateService, templateId));
+		try {
+			monitoringLayout.addToSecondary(new MCSTemplateFieldsView(templateService, templateId));
+		} catch (ValidationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		monitoringLayout.setSplitterPosition(25);
 	}
 
