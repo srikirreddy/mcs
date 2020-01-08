@@ -1,11 +1,8 @@
 package com.aiops.uim.mcs.services;
 
 import com.nimsoft.selfservice.v2.model.RawProfile;
-import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.WebResource;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
