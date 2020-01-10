@@ -31,6 +31,7 @@ public class MainView extends VerticalLayout implements UIMActionListener{
 	private String devId = null;
 	SplitLayout mainLayout;
 	SplitLayout monitoringLayout;
+	int cs_id = 2;
 	
     public MainView() {  
     	this.setHeight("100%");
@@ -64,7 +65,7 @@ public class MainView extends VerticalLayout implements UIMActionListener{
             	
             	monitoringLayout.setOrientation(Orientation.HORIZONTAL);
             	monitoringLayout.setSplitterPosition(25);
-            	monitoringLayout.addToPrimary(new MCSTemplateTreeView(templateService, "1", this));   
+            	monitoringLayout.addToPrimary(new MCSTemplateTreeView(templateService, cs_id, this));   
             	monitoringLayout.addToSecondary(new FormLayout());
             	
             	mainLayout.addToSecondary(monitoringLayout);
@@ -135,7 +136,7 @@ public class MainView extends VerticalLayout implements UIMActionListener{
 		//Update UI as per new template ID
 		int templateId = Integer.parseInt(newData);				
 		try {
-			monitoringLayout.addToSecondary(new MCSTemplateFieldsView(templateService, templateId));
+			monitoringLayout.addToSecondary(new MCSTemplateFieldsView(templateService, templateId, cs_id));
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

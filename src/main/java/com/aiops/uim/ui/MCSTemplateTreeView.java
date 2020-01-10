@@ -14,19 +14,17 @@ import com.vaadin.flow.router.Route;
 public class MCSTemplateTreeView extends VerticalLayout {
 
 	//Read data from here
-	private ITemplateService service = null;
-	private String devId = null;
+	private ITemplateService service = null;	
 	//private UIMActionListener listener = null;
 
-	public MCSTemplateTreeView(ITemplateService service, String devId, UIMActionListener listner) {
+	public MCSTemplateTreeView(ITemplateService service, int cs_id, UIMActionListener listner) {
 
-		this.service = service;
-		this.devId = devId;
+		this.service = service;		
 
 		TreeGrid<Template> tree = new TreeGrid<>();
 		tree.setSelectionMode(SelectionMode.SINGLE);
 
-		tree.setItems(service.getAllTemplatesByDevice(Long.parseLong(devId)));
+		tree.setItems(service.getAllTemplatesByDevice(cs_id));
 
 		tree.addHierarchyColumn(Template::getTemplateName).setHeader("Template Name");
 		//tree.addColumn(Template::getProbe).setHeader("Probe");

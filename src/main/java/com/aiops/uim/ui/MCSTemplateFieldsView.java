@@ -33,7 +33,7 @@ public class MCSTemplateFieldsView extends FormLayout{
 	
 	private int templateId = -1;
 	
-	public MCSTemplateFieldsView(ITemplateService service, int templateId) throws ValidationException {
+	public MCSTemplateFieldsView(ITemplateService service, int templateId, int cs_id) throws ValidationException {
 		
 		this.templateService = service;
 		this.templateId = templateId;
@@ -177,7 +177,7 @@ public class MCSTemplateFieldsView extends FormLayout{
 				e1.printStackTrace();
 			}
     		profileService = new ProfileService(MainView.getUimInstance());
-    		profileService.saveProfile(rawProfile, 1);
+    		profileService.saveProfile(rawProfile, cs_id);
     	});
     	
     	btnCancel.addClickListener(e ->{

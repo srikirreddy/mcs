@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
+
 public class ProfileService extends ServiceAPI implements IProfileService {
 
 	public ProfileService(UIMInstance uim) {
@@ -69,44 +70,37 @@ public class ProfileService extends ServiceAPI implements IProfileService {
 		return profiles;
 	}
 
+	/**
+	 *  To save a profile	
+	 */
 	@Override
-	public boolean saveProfile(RawProfile profile, long lDevId) {
-		// TODO Auto-generated method stub
+	public boolean saveProfile(RawProfile profile, Integer csId) {
 
-		ObjectMapper mapper = new ObjectMapper();
-		String json = null;
+		boolean ret = false;
 
-		try {
-			json = mapper.writeValueAsString(profile);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
+		//TODO: GUI should set this and return
+		profile.setCs_id(csId);
 
-		String url = getMCSWSBaseURL() + "/v1/devices/"+ lDevId + "/profiles";
+		String url = getMCSWSBaseURL() + "/v1/devices/"+ csId + "/profiles";
 		Map<String, String> params = new HashMap<String,String>();
-		params.put("identifier", Long.toString(lDevId));
-		params.put("body", json);
+		params.put("identifier", Long.toString(csId));
 		params.put("lookup", "by_cs_id");
 		params.put("attemptDeployment", "true");
 
 		try {
-			ClientResponse result  =  super.post(url, params);
+			ClientResponse result  =  super.post(url, params, profile);
 
-			if(result.getStatus() != 200) {
-				System.out.println("Error requesting: "  + url + " Status:" + result.getStatus());
-			}
-			else {
-				GenericType<RawProfile> genericType = new GenericType<RawProfile>(){};
-				profile = result.getEntity(genericType);
-				System.out.println("Profile recived: " + profile.toString());
+			if(result.getStatus() == 200) {				
+				
+				ret = true;
 			}
 		}
 		catch(Exception e) {
 			System.out.println("Exception: " + e);
 		}
 
-
-		return false;
+		return ret;
 	}
+
 
 }
