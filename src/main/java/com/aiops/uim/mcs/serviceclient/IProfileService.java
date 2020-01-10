@@ -5,7 +5,7 @@ import com.nimsoft.selfservice.v2.model.RawProfile;
 
 public interface IProfileService {
 
-	public List<RawProfile> getAllProfilesForDevice(long id);
+	public List<RawProfile> getAllProfilesForDevice(long id, String profileNameSearch);
 	boolean saveProfile(RawProfile profile, Integer csId);
 	RawProfile getProfileById(long id);
 }

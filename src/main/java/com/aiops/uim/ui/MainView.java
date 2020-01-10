@@ -31,7 +31,7 @@ public class MainView extends VerticalLayout implements UIMActionListener{
 	private String devId = null;
 	SplitLayout mainLayout;
 	SplitLayout monitoringLayout;
-	int cs_id = 2;
+	int cs_id = 1;
 	
     public MainView() {  
     	this.setHeight("100%");
@@ -73,7 +73,7 @@ public class MainView extends VerticalLayout implements UIMActionListener{
     	    	mainLayout.setSecondaryStyle("height", "95%");
     	    }
     	    else if(tabName.equals("Profiles")) {    	    	
-    	    	mainLayout.addToSecondary(new MCSProfilesGridView());
+    	    	mainLayout.addToSecondary(new MCSProfilesGridView(cs_id));
     	    	mainLayout.setPrimaryStyle("height", "5%");
     	    	mainLayout.setSecondaryStyle("height", "95%");
 //    	    	tabs.getUI().ifPresent(ui ->

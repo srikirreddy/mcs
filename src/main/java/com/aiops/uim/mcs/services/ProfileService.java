@@ -46,7 +46,7 @@ public class ProfileService extends ServiceAPI implements IProfileService {
 	}
 
 	@Override
-	public List<RawProfile> getAllProfilesForDevice(long id) {
+	public List<RawProfile> getAllProfilesForDevice(long id, String profileNameSearch) {
 
 		List<RawProfile> profiles = null;
 
@@ -97,6 +97,7 @@ public class ProfileService extends ServiceAPI implements IProfileService {
 		}
 		catch(Exception e) {
 			System.out.println("Exception: " + e);
+			return false;
 		}
 
 		return ret;

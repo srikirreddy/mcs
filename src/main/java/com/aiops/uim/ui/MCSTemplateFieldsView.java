@@ -11,11 +11,13 @@ import com.nimsoft.selfservice.v2.model.RawProfile;
 import com.nimsoft.selfservice.v2.model.SelectableObject;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.charts.model.Position;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -177,7 +179,16 @@ public class MCSTemplateFieldsView extends FormLayout{
 				e1.printStackTrace();
 			}
     		profileService = new ProfileService(MainView.getUimInstance());
-    		profileService.saveProfile(rawProfile, cs_id);
+    		boolean saveStatus = profileService.saveProfile(rawProfile, cs_id);   
+    		Notification notification;
+			if(saveStatus) {
+				notification = Notification.show("Successfully saved profile");
+			}
+			else {
+				notification = Notification.show("Error saving profile");
+			}
+			notification.open();
+    			
     	});
     	
     	btnCancel.addClickListener(e ->{
