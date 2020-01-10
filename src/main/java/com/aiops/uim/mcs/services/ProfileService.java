@@ -46,7 +46,7 @@ public class ProfileService extends ServiceAPI implements IProfileService {
 	}
 
 	@Override
-	public List<RawProfile> getAllProfilesForDevice(long id, String profileNameSearch) {
+	public List<RawProfile> getAllProfilesForDevice(long id) {
 
 		List<RawProfile> profiles = null;
 
