@@ -25,12 +25,16 @@ public class MCSProfilesGridView extends VerticalLayout {
     public MCSProfilesGridView(int cs_id) {
     	 
         TreeGrid<RawProfile> treeGrid = new TreeGrid<>();
+        
+        //Get list of profiles for a device
+        profileService = new ProfileService(MainView.getUimInstance());
+        List<RawProfile> profiles = profileService.getAllProfilesForDevice(cs_id);
     	
     	TextField filterText = new TextField();
     	filterText.setPlaceholder("Filter by profile name...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.EAGER);
-        filterText.addValueChangeListener(e -> updateList(treeGrid, cs_id, filterText.getValue().toLowerCase()));    	
+        filterText.addValueChangeListener(e -> updateList(treeGrid, profiles, cs_id, filterText.getValue().toLowerCase(), false));    	
        
         //addComponentAsFirst(treeGrid);
         treeGrid.addHierarchyColumn(RawProfile::getProfileName).setHeader("Profile Name");
@@ -38,7 +42,7 @@ public class MCSProfilesGridView extends VerticalLayout {
         treeGrid.addColumn(RawProfile::getTemplateId).setHeader("Template Id");//.setCaption("Hours Done");
         
         // add the list of root projects and specify a provider of sub-projects
-        updateList(treeGrid, cs_id, filterText.getValue());
+        updateList(treeGrid, profiles, cs_id, filterText.getValue(), true);
         //treeGrid.setItems(profiles, RawProfile::getSubProfiles);
         treeGrid.setPageSize(2);        
         //treeGrid.setItems(generateProjectsForYears(2010, 2016), Project::getSubProjects);
@@ -46,11 +50,15 @@ public class MCSProfilesGridView extends VerticalLayout {
     }
     
     //Get profiles for a device
-    public void updateList(TreeGrid treeGrid, int cs_id, String profileNameFilter) {
-    	profileService = new ProfileService(MainView.getUimInstance());
-        List<RawProfile> profiles = profileService.getAllProfilesForDevice(cs_id);
-        List<RawProfile> filteredProfiles = getProfilesByName(profiles, profileNameFilter);
-        treeGrid.setItems(filteredProfiles);
+    public void updateList(TreeGrid treeGrid, List<RawProfile> profiles, int cs_id, String profileNameFilter, boolean isFirstTimeLoad) {
+    	if(isFirstTimeLoad) {  
+            treeGrid.setItems(profiles);
+    	}
+    	else {
+    		 List<RawProfile> filteredProfiles = getProfilesByName(profiles, profileNameFilter);
+             treeGrid.setItems(filteredProfiles);
+    	}
+    	
     }
     
     //Filter profiles based on profile name filter
