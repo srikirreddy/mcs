@@ -1,5 +1,6 @@
 package com.aiops.uim.mcs.services;
 
+import com.nimsoft.selfservice.v2.model.Profile;
 import com.nimsoft.selfservice.v2.model.RawProfile;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
@@ -74,7 +75,7 @@ public class ProfileService extends ServiceAPI implements IProfileService {
 	 *  To save a profile	
 	 */
 	@Override
-	public boolean saveProfile(RawProfile profile, Integer csId) {
+	public boolean saveProfile(Profile profile, Integer csId) {
 
 		boolean ret = false;
 

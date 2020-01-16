@@ -19,7 +19,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 
 
-@Route("mcs")
+@Route("")
 public class MainView extends VerticalLayout implements UIMActionListener{	
 	
 	

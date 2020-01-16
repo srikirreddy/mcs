@@ -10,6 +10,7 @@ import com.aiops.uim.mcs.utils.UIMInstance;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.nimsoft.selfservice.v2.model.Profile;
 import com.nimsoft.selfservice.v2.model.RawProfile;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -112,27 +113,28 @@ public class ServiceAPI {
 
 		ClientResponse result = null;
 
-		if(obj instanceof RawProfile )	{
-			result = postProfile(url, params, (RawProfile)obj);
+		if(obj instanceof Profile )	{
+			result = postProfile(url, params, (Profile)obj);
 		}
 
 		return result;
 	}
 
 	//To create a profile
-		private ClientResponse postProfile(String url, Map<String, String> params, RawProfile profile) {
+		private ClientResponse postProfile(String url, Map<String, String> params, Profile profile) {
 
 			ClientResponse result = null;
 			String json = "";
 
-			if (profileJsonMapper==null) {
-				profileJsonMapper = new ObjectMapper(); 
-				SimpleModule module = new SimpleModule(); 
-				module.addSerializer(RawProfile.class, new RawProfileSerializer()); 
-				profileJsonMapper.registerModule(module); 
-			}
+//			if (profileJsonMapper==null) {
+//				profileJsonMapper = new ObjectMapper(); 
+//				SimpleModule module = new SimpleModule(); 
+//				module.addSerializer(RawProfile.class, new RawProfileSerializer()); 
+//				profileJsonMapper.registerModule(module); 
+//			}
 
 			try {
+				profileJsonMapper = new ObjectMapper(); 
 				json = profileJsonMapper.writeValueAsString(profile);
 			} catch (JsonProcessingException e) {
 				System.out.println("Exception" + e);

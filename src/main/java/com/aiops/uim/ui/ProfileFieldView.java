@@ -1,15 +1,12 @@
 package com.aiops.uim.ui;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.aiops.uim.mcs.serviceclient.IProfileService;
 import com.aiops.uim.mcs.serviceclient.ITemplateService;
-import com.aiops.uim.mcs.services.ProfileService;
+import com.aiops.uim.mcs.services.TemplateService;
 import com.nimsoft.selfservice.v2.model.Field;
-import com.nimsoft.selfservice.v2.model.Profile;
 import com.nimsoft.selfservice.v2.model.RawProfile;
 import com.nimsoft.selfservice.v2.model.SelectableObject;
 import com.vaadin.flow.component.button.Button;
@@ -18,7 +15,6 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout.Orientation;
 import com.vaadin.flow.component.textfield.PasswordField;
@@ -26,19 +22,18 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.router.QueryParameters;
-import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.router.Route;
 
-public class MCSTemplateFieldsView extends FormLayout{
+@Route("createsubprofile")
+public class ProfileFieldView extends FormLayout {
 
 	private ITemplateService templateService = null;
-	private IProfileService profileService = null;
+	private IProfileService profileService = null;	
+	private int templateId = 228;
 
-	private int templateId = -1;
-
-	public MCSTemplateFieldsView(ITemplateService service, int templateId, int cs_id) throws ValidationException {
-
-		this.templateService = service;
+	public ProfileFieldView() throws ValidationException {
+		 
+		this.templateService = new TemplateService(MainView.getUimInstance());;
 		this.templateId = templateId;
 		FormLayout templateDetailsForm = new FormLayout();
 
@@ -172,7 +167,6 @@ public class MCSTemplateFieldsView extends FormLayout{
 		templateFieldsLayout.addToPrimary(templateDetailsForm);
 		Button btnCreate = new Button("Create");
 		Button btnCancel = new Button("Cancel");
-		Button btnCreateProfile = new Button("Create Profile");
 
 		btnCreate.addClickListener(e ->{
 			try {				
@@ -181,17 +175,6 @@ public class MCSTemplateFieldsView extends FormLayout{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			profileService = new ProfileService(MainView.getUimInstance());
-			Profile profile = createProfileobject(rawProfile);
-			boolean saveStatus = profileService.saveProfile(profile, cs_id);   
-			Notification notification;
-			if(saveStatus) {
-				notification = Notification.show("Successfully saved profile");
-			}
-			else {
-				notification = Notification.show("Error saving profile");
-			}
-			notification.open();
 
 		});
 
@@ -199,85 +182,11 @@ public class MCSTemplateFieldsView extends FormLayout{
 
 		});
 
-		btnCreateProfile.addClickListener(e ->{			
-			
-			List<String> list = new ArrayList<String>();
-			Map<String, List<String>> parametersMap = new HashMap<String, List<String>>();			
-				 
-			list = new ArrayList<String>();
-			list.add("1");
-			parametersMap.put("templateid", list);					 
-			QueryParameters qp = new QueryParameters(parametersMap);
-			
-			btnCreateProfile.getUI().ifPresent(ui ->
-	           ui.navigate("createsubprofile", qp));
-		});
-
-		templateFieldsLayout.addToSecondary(btnCreate, btnCancel, btnCreateProfile);
+		templateFieldsLayout.addToSecondary(btnCreate,btnCancel);
 		templateFieldsLayout.setSplitterPosition(90);
 		templateFieldsLayout.setSecondaryStyle("text-align", "center");
 
 		add(templateFieldsLayout);
 
 	}
-
-	//Create profile object
-	private Profile createProfileobject(RawProfile rawProfile) {
-		Profile profile = new Profile();
-		try {
-			//profile.setRemote(remote);
-			profile.setCs_id(rawProfile.getCs_id());
-			profile.setGroupId(rawProfile.getGroupId());
-			if ( rawProfile.getProfileId() != null ) {
-				profile.setProfileId(rawProfile.getProfileId());
-			}
-			profile.setTemplateId(rawProfile.getTemplateId());
-			profile.setAccount_id(rawProfile.getAccountId());
-			//profile.setContext(context);
-			profile.setParent(rawProfile.getParentProfile());
-
-			List<Field> fieldList = rawProfile.getFields();
-			//			 Map<Integer, String> result1 = fieldList.stream().collect(
-			//		                Collectors.toMap(Field::getId, Field::getName));
-			addFields(profile, fieldList);
-		} catch (Exception e) {			
-			System.out.println("Exception: " + e.getMessage());
-		}
-
-		return profile;
-	}
-
-	//Add fields to profile 
-	private void addFields(Profile profile, List<Field> fieldList) throws Exception {
-		for(Field f : fieldList ) {
-			Map<String, Object> map = f.getAsMap();
-			Field field = new Field();
-			// Flex gives of Double NaN instead of Integer if numbers could not be parsed.
-			Object id = f.getId();
-			if ( id instanceof Integer ) {
-				field.setId((Integer)id);
-			}
-			field.setCfgkey(f.getCfgkey());
-			field.setTemplate(f.getTemplate());
-			field.setVariable(f.getVariable());
-			field.setValue(getFieldValue(f.getValue()));			
-			profile.addField(field);
-		}		
-	}
-
-	//Get field values
-	private  Object getFieldValue(Object obj) {
-		if ( !(obj instanceof Map) ) {
-			return obj;
-		}
-		Map<String,Object> map = (Map<String,Object>)obj;
-		SelectableObject so = new SelectableObject();
-		so.setId(((Integer)map.get("id")).intValue());
-		so.setIdentifier((String)map.get("identifier"));
-		so.setShortName((String)map.get("shortName"));
-		so.setLongName((String)map.get("longName"));
-		so.setAttributes((HashMap<String,String>)map.get("attributes"));
-		return so;
-	}
-
 }

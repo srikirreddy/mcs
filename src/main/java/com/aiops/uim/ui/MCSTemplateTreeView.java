@@ -10,7 +10,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.router.Route;
 
-@Route("templates")
 public class MCSTemplateTreeView extends VerticalLayout {
 
 	//Read data from here

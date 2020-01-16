@@ -13,7 +13,6 @@ import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 
-@Route("mcs/profiles")
 public class MCSProfilesGridView extends VerticalLayout {
 	
 	private IProfileService profileService = null;

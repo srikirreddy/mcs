@@ -5,12 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import  com.nimsoft.selfservice.v2.model.DeviceGroup;
-import com.nimsoft.selfservice.v2.model.Template;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
-import com.aiops.uim.mcs.models.Profile;
 import com.aiops.uim.mcs.serviceclient.IGroupService;
-import com.aiops.uim.mcs.serviceclient.IProfileService;
 import com.aiops.uim.mcs.utils.UIMInstance;
 
 public class GroupService extends ServiceAPI implements IGroupService {
