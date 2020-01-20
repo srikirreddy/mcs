@@ -5,10 +5,14 @@ import com.aiops.uim.mcs.serviceclient.UIMActionListener;
 import com.aiops.uim.mcs.services.TemplateService;
 import com.aiops.uim.mcs.utils.UIMInstance;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
@@ -20,7 +24,7 @@ import com.vaadin.flow.router.Route;
 
 
 @Route("")
-public class MainView extends VerticalLayout implements UIMActionListener{	
+public class MainView extends HorizontalLayout implements UIMActionListener{	
 	
 	
 	//TODO: Need to get this information from ecosystem
@@ -31,10 +35,58 @@ public class MainView extends VerticalLayout implements UIMActionListener{
 	private String devId = null;
 	SplitLayout mainLayout;
 	SplitLayout monitoringLayout;
+	VerticalLayout layout;
+	
 	int cs_id = 1;
 	
     public MainView() {  
-    	this.setHeight("100%");
+    	layout = new VerticalLayout();
+    	layout.setWidth("12%");
+    	layout.setHeightFull();
+    	layout.setSpacing(true);
+    	setHeightFull();
+    	VerticalLayout layoutVert = new VerticalLayout();
+//    	VerticalMenu vm = new VerticalMenu(new Section(new H1("Inbox"),
+//				   new Section(new H1("Profile")),
+//				   new Section(new H1("Friends")),
+//				   new Section(new H1("Messages")),
+//				   new Section(new H1("Settings")));
+    	
+//    	Icon icon = new Icon(VaadinIcon.USER);
+//    	icon.getStyle().set("cursor", "pointer");
+    	MenuBar menuBar = new MenuBar();
+    	menuBar.addThemeVariants(MenuBarVariant.MATERIAL_CONTAINED);
+//    	MenuItem profile = menuBar.addItem("Users");
+//    	profile.addComponentAsFirst(new Icon(VaadinIcon.USER));
+    	Button usersBtn = new Button(new Icon(VaadinIcon.USER));
+    	usersBtn.setText("MCS Admin");
+    	Button signOutBtn = new Button(new Icon(VaadinIcon.SIGN_OUT));
+    	signOutBtn.setText("SignOut");
+//    	Text selected = new Text("");
+//    	Div message = new Div(new Text("Selected: "), selected);
+//
+//    	MenuItem project = menuBar.addItem("Project");
+//    	MenuItem account = menuBar.addItem("Account");
+//    	menuBar.addItem("Sign Out", e -> selected.setText("Sign Out"));
+//    	SubMenu projectSubMenu = project.getSubMenu();
+//    	project.getSubMenu().add(new Hr());
+//    	MenuItem users = projectSubMenu.addItem("Users");
+//    	MenuItem billing = projectSubMenu.addItem("Billing");
+    	// layout.add(project);
+    	
+    	
+    	layoutVert.add(menuBar);
+    	layoutVert.add(usersBtn);
+    	layoutVert.add(signOutBtn);
+    	// layoutVert.add(but2);
+    	//layoutVert.add(icon);
+    	layout.add(layoutVert);
+    	layout.getElement().getStyle().set("margin-left", "1%");
+    	layout.setAlignItems(Alignment.START);
+    	// layout.setVerticalComponentAlignment(Alignment.START);
+    	//layout.setMargin(true);
+    	layout.getElement().getStyle().set("border", "1px solid black");
+    	add(layout);
     	//BasicLayoutView(); 
     	mainLayout = new SplitLayout();
     	createMainLayout(mainLayout);    	    	
@@ -48,7 +100,10 @@ public class MainView extends VerticalLayout implements UIMActionListener{
     	mainLayout.setSplitterPosition(5);
     	mainLayout.addToPrimary(tabs);
     	//mainLayout.setPrimaryStyle("width", "100%");
-    	mainLayout.setWidthFull();
+    	mainLayout.setWidth("83%");
+    	// mainLayout.getElement().getStyle().set("flexShrink", "0");
+    	mainLayout.getElement().getStyle().set("margin-left", "0%");
+    	mainLayout.getElement().getStyle().set("border", "1px solid black");
     	mainLayout.setHeightFull();
     	add(mainLayout);
     	
