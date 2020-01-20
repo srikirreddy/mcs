@@ -3,12 +3,12 @@ package com.aiops.uim.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aiops.uim.mcs.models.Field;
+import com.aiops.uim.mcs.models.RawProfile;
+import com.aiops.uim.mcs.models.SelectableObject;
 import com.aiops.uim.mcs.serviceclient.IProfileService;
 import com.aiops.uim.mcs.serviceclient.ITemplateService;
 import com.aiops.uim.mcs.services.TemplateService;
-import com.nimsoft.selfservice.v2.model.Field;
-import com.nimsoft.selfservice.v2.model.RawProfile;
-import com.nimsoft.selfservice.v2.model.SelectableObject;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;

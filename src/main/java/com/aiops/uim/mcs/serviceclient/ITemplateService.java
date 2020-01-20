@@ -2,7 +2,7 @@ package com.aiops.uim.mcs.serviceclient;
 
 import java.util.List;
 
-import com.nimsoft.selfservice.v2.model.RawProfile;
+import com.aiops.uim.mcs.models.RawProfile;
 import com.nimsoft.selfservice.v2.model.Template;
 
 public interface ITemplateService {

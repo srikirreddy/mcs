@@ -1,20 +1,19 @@
 package com.aiops.uim.mcs.services;
 
-import com.nimsoft.selfservice.v2.model.Profile;
-import com.nimsoft.selfservice.v2.model.RawProfile;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.aiops.uim.mcs.models.RawProfile;
 import com.aiops.uim.mcs.serviceclient.IProfileService;
 import com.aiops.uim.mcs.utils.UIMInstance;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-
-
+/**
+ * @author Srikanth Kondaveti
+ *
+ */
 public class ProfileService extends ServiceAPI implements IProfileService {
 
 	public ProfileService(UIMInstance uim) {
@@ -75,14 +74,16 @@ public class ProfileService extends ServiceAPI implements IProfileService {
 	 *  To save a profile	
 	 */
 	@Override
-	public boolean saveProfile(Profile profile, Integer csId) {
+	public boolean saveProfile(RawProfile profile, Integer csId) {
 
 		boolean ret = false;
 
 		//TODO: GUI should set this and return
-		profile.setCs_id(csId);
+		profile.setCs_id(csId);	
+		profile.setPoller(1);
 
-		String url = getMCSWSBaseURL() + "/v1/devices/"+ csId + "/profiles";
+		//String url = getMCSWSBaseURL() + "/v1/devices/"+ csId + "/profiles";
+		String url = super.getUimApiBaseURL() + "/deviceoperations/"+ csId + "/profiles";
 		Map<String, String> params = new HashMap<String,String>();
 		params.put("identifier", Long.toString(csId));
 		params.put("lookup", "by_cs_id");
@@ -91,14 +92,16 @@ public class ProfileService extends ServiceAPI implements IProfileService {
 		try {
 			ClientResponse result  =  super.post(url, params, profile);
 
-			if(result.getStatus() == 200) {				
-				
+			if(result.getStatus() == 200) {
 				ret = true;
+			}
+			else	{
+				GenericType<String> response = new GenericType<String>(){};
+				System.out.println("Profile creation failed: " +response);
 			}
 		}
 		catch(Exception e) {
 			System.out.println("Exception: " + e);
-			return false;
 		}
 
 		return ret;

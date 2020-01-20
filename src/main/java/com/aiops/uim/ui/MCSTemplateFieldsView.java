@@ -5,13 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.aiops.uim.mcs.models.RawProfile;
+import com.aiops.uim.mcs.models.SelectableObject;
 import com.aiops.uim.mcs.serviceclient.IProfileService;
 import com.aiops.uim.mcs.serviceclient.ITemplateService;
 import com.aiops.uim.mcs.services.ProfileService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nimsoft.selfservice.v2.model.Field;
 import com.nimsoft.selfservice.v2.model.Profile;
-import com.nimsoft.selfservice.v2.model.RawProfile;
-import com.nimsoft.selfservice.v2.model.SelectableObject;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -51,8 +52,8 @@ public class MCSTemplateFieldsView extends FormLayout{
 		Binder<Field> fieldBinder; 
 
 		if(rawProfile != null) {
-			List<Field> fields = rawProfile.getFields();
-			for(Field field : fields) {
+			List<com.aiops.uim.mcs.models.Field> fields = rawProfile.getFields();
+			for(com.aiops.uim.mcs.models.Field field : fields) {
 
 				fieldBinder = new Binder<>(Field.class);
 				boolean required = false;
@@ -181,9 +182,11 @@ public class MCSTemplateFieldsView extends FormLayout{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			profileService = new ProfileService(MainView.getUimInstance());
-			Profile profile = createProfileobject(rawProfile);
-			boolean saveStatus = profileService.saveProfile(profile, cs_id);   
+			if (profileService!=null)
+				profileService = new ProfileService(MainView.getUimInstance());
+
+			//Profile profile = createProfileobject(rawProfile);
+			boolean saveStatus = profileService.saveProfile(rawProfile, cs_id);   
 			Notification notification;
 			if(saveStatus) {
 				notification = Notification.show("Successfully saved profile");
@@ -279,5 +282,4 @@ public class MCSTemplateFieldsView extends FormLayout{
 		so.setAttributes((HashMap<String,String>)map.get("attributes"));
 		return so;
 	}
-
 }

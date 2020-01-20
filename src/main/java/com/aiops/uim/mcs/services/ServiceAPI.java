@@ -5,13 +5,12 @@ import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
-import com.aiops.uim.mcs.utils.RawProfileSerializer;
+import com.aiops.uim.mcs.models.RawProfile;
 import com.aiops.uim.mcs.utils.UIMInstance;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.nimsoft.selfservice.v2.model.Profile;
-import com.nimsoft.selfservice.v2.model.RawProfile;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -113,54 +112,52 @@ public class ServiceAPI {
 
 		ClientResponse result = null;
 
-		if(obj instanceof Profile )	{
-			result = postProfile(url, params, (Profile)obj);
+		if(obj instanceof RawProfile )	{
+			result = postProfile(url, params, (RawProfile)obj);
 		}
 
 		return result;
 	}
 
 	//To create a profile
-		private ClientResponse postProfile(String url, Map<String, String> params, Profile profile) {
+	private ClientResponse postProfile(String url, Map<String, String> params, RawProfile profile) {
 
-			ClientResponse result = null;
-			String json = "";
+		ClientResponse result = null;
+		String json = "";
 
-//			if (profileJsonMapper==null) {
-//				profileJsonMapper = new ObjectMapper(); 
-//				SimpleModule module = new SimpleModule(); 
-//				module.addSerializer(RawProfile.class, new RawProfileSerializer()); 
-//				profileJsonMapper.registerModule(module); 
-//			}
-
-			try {
-				profileJsonMapper = new ObjectMapper(); 
-				json = profileJsonMapper.writeValueAsString(profile);
-			} catch (JsonProcessingException e) {
-				System.out.println("Exception" + e);
-				e.printStackTrace();
-			}
-
-			try {
-				Client client = getUimAPIRestClient();
-				WebResource webResource = client.resource(url);
-				MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
-				params.forEach((k, v) -> queryParams.add(k, v));
-
-				WebResource.Builder builder = webResource.queryParams(queryParams)
-						.type(MediaType.APPLICATION_JSON)
-						.accept(MediaType.APPLICATION_JSON);
-
-				System.out.println("Requesting: " + url);
-				result = builder.post(ClientResponse.class, json);
-				if (result.getStatus() != 200) {
-					System.out.println("Error Response:" + result);
-				}
-			} catch (Exception e) {
-				System.out.println("Exception: " + e);
-			}
-
-			return result;
+		if (profileJsonMapper==null) {
+			profileJsonMapper = new ObjectMapper(); 
+			profileJsonMapper.setVisibility(PropertyAccessor.ALL, Visibility.NONE);
+			profileJsonMapper.setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
 		}
 
+		try {
+			json = profileJsonMapper.writeValueAsString(profile);
+			System.out.println("Json body: " + json);
+		} catch (JsonProcessingException e) {
+			System.out.println("Exception" + e);
+			e.printStackTrace();
+		}
+
+		try {
+			Client client = getUimAPIRestClient();
+			WebResource webResource = client.resource(url);
+			MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
+			params.forEach((k, v) -> queryParams.add(k, v));
+
+			WebResource.Builder builder = webResource.queryParams(queryParams)
+					.type(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON);
+
+			System.out.println("Requesting: " + url);
+			result = builder.post(ClientResponse.class, json);
+			if (result.getStatus() != 200) {
+				System.out.println("Error Response:" + result);
+			}
+		} catch (Exception e) {
+			System.out.println("Exception: " + e);
+		}
+
+		return result;
+	}
 }
