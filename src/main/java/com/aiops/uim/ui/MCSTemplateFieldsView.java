@@ -5,14 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.aiops.uim.mcs.models.Field;
 import com.aiops.uim.mcs.models.RawProfile;
 import com.aiops.uim.mcs.models.SelectableObject;
 import com.aiops.uim.mcs.serviceclient.IProfileService;
 import com.aiops.uim.mcs.serviceclient.ITemplateService;
 import com.aiops.uim.mcs.services.ProfileService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nimsoft.selfservice.v2.model.Field;
-import com.nimsoft.selfservice.v2.model.Profile;
+//import com.nimsoft.selfservice.v2.model.Field;
+//import com.nimsoft.selfservice.v2.model.Profile;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -173,7 +174,7 @@ public class MCSTemplateFieldsView extends FormLayout{
 		templateFieldsLayout.addToPrimary(templateDetailsForm);
 		Button btnCreate = new Button("Create");
 		Button btnCancel = new Button("Cancel");
-		Button btnCreateProfile = new Button("Create Profile");
+		//Button btnCreateProfile = new Button("Create Profile");
 
 		btnCreate.addClickListener(e ->{
 			try {				
@@ -182,7 +183,7 @@ public class MCSTemplateFieldsView extends FormLayout{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			if (profileService!=null)
+			if (profileService==null)
 				profileService = new ProfileService(MainView.getUimInstance());
 
 			//Profile profile = createProfileobject(rawProfile);
@@ -202,21 +203,7 @@ public class MCSTemplateFieldsView extends FormLayout{
 
 		});
 
-		btnCreateProfile.addClickListener(e ->{			
-			
-			List<String> list = new ArrayList<String>();
-			Map<String, List<String>> parametersMap = new HashMap<String, List<String>>();			
-				 
-			list = new ArrayList<String>();
-			list.add("1");
-			parametersMap.put("templateid", list);					 
-			QueryParameters qp = new QueryParameters(parametersMap);
-			
-			btnCreateProfile.getUI().ifPresent(ui ->
-	           ui.navigate("createsubprofile", qp));
-		});
-
-		templateFieldsLayout.addToSecondary(btnCreate, btnCancel, btnCreateProfile);
+		templateFieldsLayout.addToSecondary(btnCreate, btnCancel/* , btnCreateProfile */);
 		templateFieldsLayout.setSplitterPosition(90);
 		templateFieldsLayout.setSecondaryStyle("text-align", "center");
 
@@ -225,8 +212,8 @@ public class MCSTemplateFieldsView extends FormLayout{
 	}
 
 	//Create profile object
-	private Profile createProfileobject(RawProfile rawProfile) {
-		Profile profile = new Profile();
+	private RawProfile createProfileobject(RawProfile rawProfile) {
+		RawProfile profile = new RawProfile();
 		try {
 			//profile.setRemote(remote);
 			profile.setCs_id(rawProfile.getCs_id());
@@ -235,9 +222,9 @@ public class MCSTemplateFieldsView extends FormLayout{
 				profile.setProfileId(rawProfile.getProfileId());
 			}
 			profile.setTemplateId(rawProfile.getTemplateId());
-			profile.setAccount_id(rawProfile.getAccountId());
+			profile.setAccountId(rawProfile.getAccountId());
 			//profile.setContext(context);
-			profile.setParent(rawProfile.getParentProfile());
+			profile.setParentProfile(rawProfile.getParentProfile());
 
 			List<Field> fieldList = rawProfile.getFields();
 			//			 Map<Integer, String> result1 = fieldList.stream().collect(
@@ -251,21 +238,15 @@ public class MCSTemplateFieldsView extends FormLayout{
 	}
 
 	//Add fields to profile 
-	private void addFields(Profile profile, List<Field> fieldList) throws Exception {
-		for(Field f : fieldList ) {
-			Map<String, Object> map = f.getAsMap();
-			Field field = new Field();
-			// Flex gives of Double NaN instead of Integer if numbers could not be parsed.
-			Object id = f.getId();
-			if ( id instanceof Integer ) {
-				field.setId((Integer)id);
-			}
-			field.setCfgkey(f.getCfgkey());
-			field.setTemplate(f.getTemplate());
-			field.setVariable(f.getVariable());
-			field.setValue(getFieldValue(f.getValue()));			
-			profile.addField(field);
-		}		
+	private void addFields(RawProfile profile, List<Field> fieldList) throws Exception {
+		/*
+		 * for(Field f : fieldList ) { Map<String, Object> map = f.getAsMap(); Field
+		 * field = new Field(); // Flex gives of Double NaN instead of Integer if
+		 * numbers could not be parsed. Object id = f.getId(); if ( id instanceof
+		 * Integer ) { field.setId((Integer)id); } field.setCfgkey(f.getCfgkey());
+		 * field.setTemplate(f.getTemplate()); field.setVariable(f.getVariable());
+		 * field.setValue(getFieldValue(f.getValue())); profile.addFields(field); }
+		 */	
 	}
 
 	//Get field values
