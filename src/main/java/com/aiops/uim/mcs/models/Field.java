@@ -484,6 +484,18 @@ public class Field extends FieldBean {
 		}
 
 	}
+	
+	public boolean getValueAsBoolean() {
+		final Object v = getValue();
+		if (v == null) {
+			return false;
+		}
+		if (v.equals("yes"))
+			return true;
+		else
+			return false;
+		
+	}
 
 	public ArrayList<SelectableObject> getValues() {
 		return values;

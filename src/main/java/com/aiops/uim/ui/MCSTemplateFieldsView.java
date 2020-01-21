@@ -11,7 +11,6 @@ import com.aiops.uim.mcs.models.SelectableObject;
 import com.aiops.uim.mcs.serviceclient.IProfileService;
 import com.aiops.uim.mcs.serviceclient.ITemplateService;
 import com.aiops.uim.mcs.services.ProfileService;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 //import com.nimsoft.selfservice.v2.model.Field;
 //import com.nimsoft.selfservice.v2.model.Profile;
 import com.vaadin.flow.component.button.Button;
@@ -28,8 +27,6 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.router.QueryParameters;
-import com.vaadin.flow.router.RouterLink;
 
 public class MCSTemplateFieldsView extends FormLayout{
 
@@ -83,7 +80,8 @@ public class MCSTemplateFieldsView extends FormLayout{
 						textArea.setLabel(field.getLabel());
 						textArea.setRequired(required);
 						textArea.setValue(field.getDefaultValue());
-						textArea.setId(field.getId().toString());							  
+						textArea.setId(field.getId().toString());
+						fieldBinder.forField(textArea).bind(Field::getValueAsString, Field:: setValue);
 						templateDetailsForm.add(textArea);
 						break;
 
@@ -94,6 +92,7 @@ public class MCSTemplateFieldsView extends FormLayout{
 						pwd.setId(field.getId().toString());	
 						pwd.setPlaceholder("Enter password");
 						pwd.setRequired(required);
+						fieldBinder.forField(pwd).bind(Field::getValueAsString, Field:: setValue);
 						templateDetailsForm.add(pwd);
 						break;
 
@@ -101,6 +100,8 @@ public class MCSTemplateFieldsView extends FormLayout{
 
 						Checkbox cb = new Checkbox();	
 						cb.setLabel(field.getLabel());
+						
+						fieldBinder.forField(cb).bind(Field::getValueAsBoolean, Field:: setValue);
 						templateDetailsForm.add(cb);
 						break;
 
