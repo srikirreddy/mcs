@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.nimsoft.selfservice.v2.model.RawProfile;
+
 import com.nimsoft.selfservice.v2.model.Template;
+import com.aiops.uim.mcs.models.RawProfile;
 import com.aiops.uim.mcs.serviceclient.ITemplateService;
 import com.aiops.uim.mcs.utils.UIMInstance;
 import com.sun.jersey.api.client.ClientResponse;

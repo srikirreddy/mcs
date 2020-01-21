@@ -7,9 +7,9 @@ import java.util.Random;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
+import com.aiops.uim.mcs.models.RawProfile;
 import com.aiops.uim.mcs.serviceclient.IProfileService;
 import com.aiops.uim.mcs.services.ProfileService;
-import com.nimsoft.selfservice.v2.model.RawProfile;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
