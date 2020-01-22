@@ -7,6 +7,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import com.aiops.uim.mcs.models.RawProfile;
 import com.aiops.uim.mcs.utils.UIMInstance;
+import com.aiops.uim.mcs.utils.exceptions.ProfileCreationException;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -152,9 +153,15 @@ public class ServiceAPI {
 			System.out.println("Requesting: " + url);
 			result = builder.post(ClientResponse.class, json);
 			if (result.getStatus() != 200) {
-				System.out.println("Error Response:" + result);
+				String error = result.getEntity(String.class);
+				System.out.println("Error Response:" + error);
+				throw new ProfileCreationException(error);
 			}
-		} catch (Exception e) {
+		}
+		catch(ProfileCreationException pe)	{
+			throw pe;
+		}
+		catch (Exception e) {
 			System.out.println("Exception: " + e);
 		}
 

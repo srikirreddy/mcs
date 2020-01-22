@@ -9,6 +9,7 @@ import com.aiops.uim.mcs.models.SelectableObject;
 import com.aiops.uim.mcs.serviceclient.IProfileService;
 import com.aiops.uim.mcs.serviceclient.ITemplateService;
 import com.aiops.uim.mcs.services.TemplateService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -22,7 +23,10 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.binder.ValidationResult;
+import com.vaadin.flow.data.binder.Validator;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.Router;
 
 @Route("createsubprofile")
 public class ProfileFieldView extends FormLayout {
@@ -31,9 +35,15 @@ public class ProfileFieldView extends FormLayout {
 	private IProfileService profileService = null;	
 	private int templateId = 228;
 
-	public ProfileFieldView() throws ValidationException {
+	public ProfileFieldView(Integer templateId) throws ValidationException {
 		 
-		this.templateService = new TemplateService(MainView.getUimInstance());;
+		this.templateService = new TemplateService(MainView.getUimInstance());
+		 Router router = UI.getCurrent().getRouter();
+//		 List<RouteData> routes = router.getRoutes();
+//		 Map<Class<? extends RouterLayout>, List<RouteData>>
+//	        routesByParent = router.getRoutesByParent();
+//	List<RouteData> myRoutes =
+//	        routesByParent.get(MainView.class);
 		this.templateId = templateId;
 		FormLayout templateDetailsForm = new FormLayout();
 
@@ -68,7 +78,21 @@ public class ProfileFieldView extends FormLayout {
 						textField.setId(field.getId().toString());							  
 						templateDetailsForm.add(textField);
 						String fieldName = field.getName();
-						fieldBinder.forField(textField).bind(Field::getValueAsString, Field:: setValue);
+						// textField.setErrorMessage("Value required");
+						if(required) {
+							fieldBinder.forField(textField).withValidator((Validator<String>) (value, context) -> {
+
+								/*
+								 * if (value == null || value.isEmpty()) { return ValidationResult
+								 * .error("Length must be 10 digits"); }
+								 */
+								return ValidationResult.ok();
+					            
+							}).bind(Field::getValueAsString, Field:: setValue);
+						}else {
+							fieldBinder.forField(textField).bind(Field::getValueAsString, Field:: setValue);
+							
+						}
 						break;
 
 					case "textarea" :
@@ -118,40 +142,20 @@ public class ProfileFieldView extends FormLayout {
 						templateDetailsForm.add(datePicker);    					
 						break;
 
-					case "timezone" :
-
-						break;
-
-					case "descriptivetext" :
-
-						break;
-
 					case "hyperlink" :
 						Anchor anchor = new Anchor();
 						break;
 
+					case "timezone" :
+					case "descriptivetext" :
 					case "spacer" :
-
-						break;
-
 					case "dynamic" :
-
-						break;
-
 					case "profilename" :
-
-						break;
-
 					case "objectselect" :
-
-						break;
-
 					case "qos" :
 
-						break;
-
 					default :
-
+						System.out.println("!!! Unimplmentated field");
 					}
 
 
@@ -179,9 +183,11 @@ public class ProfileFieldView extends FormLayout {
 		});
 
 		btnCancel.addClickListener(e ->{
+			 setVisible(false);
+			 add(new MCSProfilesGridView(1));
 
 		});
-
+		btnCreate.getStyle().set("margin-left", "20%");
 		templateFieldsLayout.addToSecondary(btnCreate,btnCancel);
 		templateFieldsLayout.setSplitterPosition(90);
 		templateFieldsLayout.setSecondaryStyle("text-align", "center");

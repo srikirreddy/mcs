@@ -9,6 +9,7 @@ import java.util.Map;
 import com.aiops.uim.mcs.models.RawProfile;
 import com.aiops.uim.mcs.serviceclient.IProfileService;
 import com.aiops.uim.mcs.utils.UIMInstance;
+import com.aiops.uim.mcs.utils.exceptions.ProfileCreationException;
 
 /**
  * @author Srikanth Kondaveti
@@ -74,7 +75,7 @@ public class ProfileService extends ServiceAPI implements IProfileService {
 	 *  To save a profile	
 	 */
 	@Override
-	public boolean saveProfile(RawProfile profile, Integer csId) {
+	public boolean saveProfile(RawProfile profile, Integer csId) throws Exception {
 
 		boolean ret = false;
 
@@ -98,10 +99,11 @@ public class ProfileService extends ServiceAPI implements IProfileService {
 			else	{
 				GenericType<String> response = new GenericType<String>(){};
 				System.out.println("Profile creation failed: " +response);
+				throw new ProfileCreationException(result.getEntity(String.class));
 			}
 		}
-		catch(Exception e) {
-			System.out.println("Exception: " + e);
+		catch (ProfileCreationException pe) {
+			throw pe;
 		}
 
 		return ret;
