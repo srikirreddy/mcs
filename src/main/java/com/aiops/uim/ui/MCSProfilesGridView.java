@@ -1,8 +1,11 @@
 package com.aiops.uim.ui;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
@@ -12,6 +15,7 @@ import com.aiops.uim.mcs.serviceclient.IProfileService;
 import com.aiops.uim.mcs.services.ProfileService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
@@ -20,8 +24,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.validator.StringLengthValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.QueryParameters;
 
 public class MCSProfilesGridView extends VerticalLayout {
 	
@@ -30,16 +36,20 @@ public class MCSProfilesGridView extends VerticalLayout {
     // used to generate some random data
     private final Random random = new Random();
     RawProfile rawProfile;
+    Integer templateId;
+    TextField filterText;
 
     public MCSProfilesGridView(int cs_id) {
     	 
         TreeGrid<RawProfile> treeGrid = new TreeGrid<>();
         String editText = "Edit";
         //Get list of profiles for a device
+        setVisible(true);
         profileService = new ProfileService(MainView.getUimInstance());
         List<RawProfile> profiles = profileService.getAllProfilesForDevice(cs_id);
     	
-    	TextField filterText = new TextField();
+        filterText = new TextField();
+        filterText.setEnabled(true);
     	filterText.setPlaceholder("Filter by profile name...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.EAGER);
@@ -74,6 +84,10 @@ public class MCSProfilesGridView extends VerticalLayout {
         treeGrid.setPageSize(2);        
         //treeGrid.setItems(generateProjectsForYears(2010, 2016), Project::getSubProjects);
         add(filterText, treeGrid);
+        treeGrid.addItemClickListener(rec-> {
+        	templateId = rec.getItem().getTemplateId();
+        });
+        treeGrid.setSelectionMode(SelectionMode.MULTI);
     }
     
     //Get profiles for a device
@@ -97,8 +111,12 @@ public class MCSProfilesGridView extends VerticalLayout {
     }
     private Icon createRemoveButton(Grid<RawProfile> grid, RawProfile item) {
     	Icon button = new Icon(VaadinIcon.MINUS);
+    	button.setSize("20px");
+    	button.setColor("green");
     	if(item.getTemplateId() > 150 && item.getTemplateId() < 160) {
          button = new Icon(VaadinIcon.PLUS);
+         button.setSize("20px");
+     	 button.setColor("green");
 //        , clickEvent -> {
 //            ListDataProvider<RawProfile> dataProvider = (ListDataProvider<RawProfile>) grid
 //                    .getDataProvider();
@@ -106,7 +124,24 @@ public class MCSProfilesGridView extends VerticalLayout {
 //            dataProvider.refreshAll();
 //        });
     	}
-    	button.addClickListener(e-> System.err.println("Test click"));
+    	button.addClickListener(e-> {
+    		List<String> list = new ArrayList<String>();
+			Map<String, List<String>> parametersMap = new HashMap<String, List<String>>();			
+			list = new ArrayList<String>();
+			list.add(String.valueOf(item.getTemplateId()));
+			parametersMap.put("templateid", list);					 
+			QueryParameters qp = new QueryParameters(parametersMap);
+//			getUI().ifPresent(ui ->
+//	           ui.navigate("createsubprofile", qp));
+			 
+			try {
+				filterText.setEnabled(false);
+				add(new ProfileFieldView(item.getTemplateId()));
+			} catch (ValidationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    	});
         return button;
     }
 }

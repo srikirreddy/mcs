@@ -187,15 +187,22 @@ public class MCSTemplateFieldsView extends FormLayout{
 				profileService = new ProfileService(MainView.getUimInstance());
 
 			//Profile profile = createProfileobject(rawProfile);
-			boolean saveStatus = profileService.saveProfile(rawProfile, cs_id);   
-			Notification notification;
+			boolean saveStatus = false;
+			Notification notification = null;
+			
+			try {
+				saveStatus = profileService.saveProfile(rawProfile, cs_id);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+				notification = Notification.show("Error saving profile:" + e1.getMessage());
+			}   
+
 			if(saveStatus) {
 				notification = Notification.show("Successfully saved profile");
 			}
-			else {
-				notification = Notification.show("Error saving profile");
-			}
-			notification.open();
+			
+			if (notification!=null)
+				notification.open();
 
 		});
 
